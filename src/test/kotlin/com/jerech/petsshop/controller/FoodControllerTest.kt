@@ -5,18 +5,18 @@ import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.service.FoodService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 import java.util.*
 
-
-@SpringBootTest
+@ExtendWith(MockitoExtension::class)
 class FoodControllerTest {
 
     lateinit var webTestClient: WebTestClient
@@ -32,7 +32,7 @@ class FoodControllerTest {
     @Test
     fun createFoodSuccessfully() {
         //given
-        Mockito.`when`(foodService.save(any()))
+        `when`(foodService.save(any()))
             .thenReturn(Mono.just(Food(1, "Dogee", "DOG", "ADULT", 20f, LocalDateTime.now())))
         val requestBody = FoodRequest("Dogee", "DOG", "ADULT", 20f)
         //when
@@ -63,7 +63,7 @@ class FoodControllerTest {
     @Test
     fun getAllSucessful() {
         //given
-        Mockito.`when`(foodService.getAll())
+        `when`(foodService.getAll())
             .thenReturn(Mono.just(Collections.emptyList()))
 
         //when
