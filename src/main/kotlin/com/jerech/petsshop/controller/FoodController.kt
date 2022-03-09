@@ -2,11 +2,11 @@ package com.jerech.petsshop.controller
 
 import com.jerech.petsshop.controller.dto.FoodRequest
 import com.jerech.petsshop.controller.dto.FoodResponse
+import com.jerech.petsshop.exception.ErrorHandler
 import com.jerech.petsshop.service.FoodService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.core.publisher.Mono
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -21,22 +21,19 @@ class FoodController(private val foodService: FoodService) {
     val logger: Logger = Logger.getLogger(FoodController::class.java.simpleName)
 
     @PostMapping
-    fun save(@Valid @RequestBody foodRequest: Mono<FoodRequest>): Mono<ResponseEntity<Void>> {
+    fun save(@Valid @RequestBody foodRequest: Mono<FoodRequest>): Mono<ResponseEntity<*>> {
         logger.log(Level.INFO, "Init save")
         return foodRequest
             .map { foodRequest -> foodRequest.mapToFood() }
             .flatMap { food -> foodService.save(food) }
-            .map<ResponseEntity<Void>?> { ResponseEntity.status(HttpStatus.CREATED).build() }
-            .onErrorResume {
-                if (it is WebExchangeBindException)
-                    Mono.just(ResponseEntity.badRequest().build())
-                 else
-                    Mono.just(ResponseEntity.internalServerError().build())
+            .map<ResponseEntity<*>> { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+            .onErrorResume { error ->
+                ErrorHandler.from(error::class.java.name).build(error.message)
             }
     }
 
     @GetMapping
-    fun getAll(): Mono<ResponseEntity<List<FoodResponse>>> {
+    fun getAll(): Mono<ResponseEntity<*>> {
         return foodService.getAll()
             .map { listFood -> listFood
                 .stream()
@@ -44,7 +41,9 @@ class FoodController(private val foodService: FoodService) {
                 .collect(Collectors.toList())
             }
             .doOnNext { listFoodResponse -> logger.log(Level.INFO, "Cantidad de foods responses: " + listFoodResponse.size) }
-            .map<ResponseEntity<List<FoodResponse>>?> { ResponseEntity.ok(it) }
-            .onErrorResume { Mono.just(ResponseEntity.internalServerError().build()) }
+            .map<ResponseEntity<*>> { ResponseEntity.ok(it) }
+            .onErrorResume { error ->
+                ErrorHandler.from(error::class.java.name).build(error.message)
+            }
     }
 }
