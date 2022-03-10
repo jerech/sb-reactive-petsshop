@@ -12,7 +12,7 @@ import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
-class ErrorHandlerTest {
+internal class ErrorHandlerTest {
 
     @Mock
     lateinit var methodParameter: MethodParameter
@@ -52,11 +52,9 @@ class ErrorHandlerTest {
 
         StepVerifier
             .create(responseMono)
-            .consumeNextWith { r ->  Assertions
-                .assertThat(r.statusCode)
-                .isEqualTo(HttpStatus.BAD_REQUEST)
-            }
-            .verifyComplete()
+            .expectNextMatches {r -> HttpStatus.BAD_REQUEST == r.statusCode }
+            .expectComplete()
+            .verify()
     }
 
     @Test
@@ -67,10 +65,8 @@ class ErrorHandlerTest {
 
         StepVerifier
             .create(responseMono)
-            .consumeNextWith { r -> Assertions
-                .assertThat(r.statusCode)
-                .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
-            }
-            .verifyComplete();
+            .expectNextMatches {r -> HttpStatus.INTERNAL_SERVER_ERROR == r.statusCode }
+            .expectComplete()
+            .verify()
     }
 }

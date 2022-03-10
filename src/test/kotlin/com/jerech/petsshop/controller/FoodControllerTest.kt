@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
-class FoodControllerTest {
+internal class FoodControllerTest {
 
     lateinit var webTestClient: WebTestClient
 

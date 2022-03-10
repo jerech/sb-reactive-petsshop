@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 @TestMethodOrder(OrderAnnotation::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FoodControllerIT {
+internal class FoodControllerIT {
 
     @Autowired
     lateinit var webTestClient: WebTestClient

@@ -1,4 +1,4 @@
-package com.jerech.petsshop.exception;
+package com.jerech.petsshop.exception
 
 import com.jerech.petsshop.exception.ErrorHandler.MapOfErrors.ERROR_HANDLER_BY_EXCEPTION_NAME
 import org.springframework.http.HttpStatus
@@ -7,7 +7,7 @@ import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.core.publisher.Mono
 
 enum class ErrorHandler(
-    val exceptionName: String,
+    exceptionName: String,
     val httpStatus: HttpStatus,
     val title: String
 ) {
