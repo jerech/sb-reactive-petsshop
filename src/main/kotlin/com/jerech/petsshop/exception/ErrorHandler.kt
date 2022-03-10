@@ -25,8 +25,8 @@ enum class ErrorHandler(
 
     companion object {
         @JvmStatic
-        fun from(exceptionName: String) : ErrorHandler {
-            return ERROR_HANDLER_BY_EXCEPTION_NAME.getOrDefault(exceptionName, GENERIC_ERROR)
+        fun from(error: Throwable) : ErrorHandler {
+            return ERROR_HANDLER_BY_EXCEPTION_NAME.getOrDefault(error::class.java.name, GENERIC_ERROR)
         }
     }
 

@@ -2,15 +2,27 @@ package com.jerech.petsshop.exception;
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
+import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.core.MethodParameter
 import org.springframework.http.HttpStatus
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.test.StepVerifier
 
+@ExtendWith(MockitoExtension::class)
 class ErrorHandlerTest {
+
+    @Mock
+    lateinit var methodParameter: MethodParameter
+    @Mock
+    lateinit var bindingResult: BindingResult
 
     @Test
     fun getErrorHandlerFromExceptionNameForInvalidParamsException() {
-        val errorHandler = ErrorHandler.from(WebExchangeBindException::class.java.name)
+        val error = WebExchangeBindException(methodParameter, bindingResult)
+        val errorHandler = ErrorHandler.from(error)
         Assertions
             .assertThat(errorHandler.httpStatus)
             .isEqualTo(HttpStatus.BAD_REQUEST);
@@ -23,7 +35,8 @@ class ErrorHandlerTest {
 
     @Test
     fun getErrorHandlerFromExceptionNameForNotFoundException() {
-        val errorHandler = ErrorHandler.from(RuntimeException::class.java.name)
+        val error = Throwable(RuntimeException())
+        val errorHandler = ErrorHandler.from(error)
         Assertions
             .assertThat(errorHandler.httpStatus)
             .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)

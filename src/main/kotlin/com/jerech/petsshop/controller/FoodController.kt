@@ -28,7 +28,7 @@ class FoodController(private val foodService: FoodService) {
             .flatMap { food -> foodService.save(food) }
             .map<ResponseEntity<*>> { ResponseEntity.status(HttpStatus.CREATED).body(it) }
             .onErrorResume { error ->
-                ErrorHandler.from(error::class.java.name).build(error.message)
+                ErrorHandler.from(error).build(error.message)
             }
     }
 
@@ -43,7 +43,7 @@ class FoodController(private val foodService: FoodService) {
             .doOnNext { listFoodResponse -> logger.log(Level.INFO, "Cantidad de foods responses: " + listFoodResponse.size) }
             .map<ResponseEntity<*>> { ResponseEntity.ok(it) }
             .onErrorResume { error ->
-                ErrorHandler.from(error::class.java.name).build(error.message)
+                ErrorHandler.from(error).build(error.message)
             }
     }
 }

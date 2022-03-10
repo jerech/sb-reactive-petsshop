@@ -88,7 +88,6 @@ class FoodControllerIT {
         val foodResponse1 = FoodResponse( "Food1", "Type", "Segment", 10f)
         val foodResponse2 = FoodResponse( "Food2", "Type", "Segment", 16f)
 
-
         foodRepository.save(food1).block()
         foodRepository.save(food2).block()
 
