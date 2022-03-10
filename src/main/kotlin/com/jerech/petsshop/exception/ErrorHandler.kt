@@ -7,9 +7,9 @@ import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.core.publisher.Mono
 
 enum class ErrorHandler(
-    private val exceptionName: String,
-    private val httpStatus: HttpStatus,
-    private val title: String
+    val exceptionName: String,
+    val httpStatus: HttpStatus,
+    val title: String
 ) {
 
     GENERIC_ERROR(GenericProblemException::class.java.name, HttpStatus.INTERNAL_SERVER_ERROR, "GENERIC ERROR"),
