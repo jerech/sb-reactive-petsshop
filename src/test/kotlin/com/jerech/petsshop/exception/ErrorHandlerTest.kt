@@ -73,7 +73,7 @@ internal class ErrorHandlerTest {
     }
 
     @Test
-    fun from() {
+    fun toStringCheck() {
         val errorHandler = ErrorHandler.GENERIC_ERROR
         assertThat(errorHandler.toString())
             .isEqualTo("GENERIC_ERROR")
