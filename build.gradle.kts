@@ -30,6 +30,7 @@ dependencies {
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
 	testImplementation("io.projectreactor:reactor-test")
 }
 

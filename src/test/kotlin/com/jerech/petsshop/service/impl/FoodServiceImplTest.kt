@@ -1,12 +1,11 @@
 package com.jerech.petsshop.service.impl
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.repository.FoodRepository
 import com.jerech.petsshop.service.FoodService
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
@@ -36,16 +35,18 @@ internal class FoodServiceImplTest {
         //then
         StepVerifier
             .create(monoFood)
-            .consumeNextWith {
-                assertEquals(it.id, 1)
-                assertEquals(it.name, "Dogee")
-                assertEquals(it.type, "DOG")
-                assertEquals(it.segment, "ADULT")
-                assertEquals(it.proteinPercentage, 20f)
+            .expectNextMatches {
+                it.id == 1 &&
+                it.name == "Dogee" &&
+                it.type == "DOG" &&
+                it.segment == "ADULT" &&
+                it.proteinPercentage == 20f
             }
-            .verifyComplete()
+            .expectComplete()
+            .verify()
 
     }
+
 
     @Test
     fun getAllFoods() {
@@ -63,7 +64,7 @@ internal class FoodServiceImplTest {
         StepVerifier
             .create(monoFoods)
             .consumeNextWith {
-                Assertions.assertThat(it.size).isEqualTo(2)
+                assertThat(it.size).isEqualTo(2)
             }
             .verifyComplete()
     }

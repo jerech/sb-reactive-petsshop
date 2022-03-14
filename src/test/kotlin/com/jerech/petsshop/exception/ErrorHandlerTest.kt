@@ -1,5 +1,7 @@
 package com.jerech.petsshop.exception;
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -68,5 +70,12 @@ internal class ErrorHandlerTest {
             .expectNextMatches {r -> HttpStatus.INTERNAL_SERVER_ERROR == r.statusCode }
             .expectComplete()
             .verify()
+    }
+
+    @Test
+    fun from() {
+        val errorHandler = ErrorHandler.GENERIC_ERROR
+        assertThat(errorHandler.toString())
+            .isEqualTo("GENERIC_ERROR")
     }
 }

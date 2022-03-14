@@ -24,7 +24,7 @@ class FoodController(private val foodService: FoodService) {
     fun save(@Valid @RequestBody foodRequest: Mono<FoodRequest>): Mono<ResponseEntity<*>> {
         logger.log(Level.INFO, "Init save")
         return foodRequest
-            .map { foodRequest -> foodRequest.mapToFood() }
+            .map { request -> request.mapToFood() }
             .flatMap { food -> foodService.save(food) }
             .map<ResponseEntity<*>> { ResponseEntity.status(HttpStatus.CREATED).body(it) }
             .onErrorResume { error ->
