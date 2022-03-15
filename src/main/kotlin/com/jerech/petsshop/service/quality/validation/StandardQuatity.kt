@@ -8,7 +8,7 @@ class StandardQuatity(nextValidator: FoodQualityValidator?): FoodQualityValidato
         val standardProtein = 15f
         val listStandardQuatity = foodList
             .stream()
-            .filter{ it.proteinPercentage>standardProtein}
+            .filter{ it.proteinPercentage > standardProtein}
             .collect(Collectors.toList())
 
         if (listStandardQuatity.size == foodList.size){

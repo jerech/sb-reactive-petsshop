@@ -8,11 +8,11 @@ class HighQuatity(nextValidator: FoodQualityValidator?): FoodQualityValidator(ne
         val standardProtein = 26f
         val sizeToCompare = foodList
             .stream()
-            .filter{ it.proteinPercentage>standardProtein}
+            .filter{ it.proteinPercentage > standardProtein}
             .collect(Collectors.toList())
             .size
 
-        if (foodList.size == sizeToCompare){
+        if (foodList.size == sizeToCompare) {
             return nextValidator?.validate(foodList) ?: true
         } else {
             println("Failed HighQuatity validation")
