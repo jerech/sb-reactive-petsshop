@@ -68,4 +68,88 @@ internal class FoodServiceImplTest {
             }
             .verifyComplete()
     }
+
+    @Test
+    fun validateProtein() {
+        //given
+        val food1 = Food(1, "Food1", "Type", "Segment", 32f, LocalDateTime.now())
+        val food2 = Food(2, "Food2", "Type", "Segment", 31f, LocalDateTime.now())
+        val food3 = Food(3, "Food3", "Type", "Segment", 30f, LocalDateTime.now())
+        val food4 = Food(4, "Food4", "Type", "Segment", 28f, LocalDateTime.now())
+        val listFoods = listOf(food1, food2, food3, food4)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+
+        //when
+        val mono = foodService.validateQuality(listFoods)
+        //then
+        StepVerifier
+            .create(mono)
+            .consumeNextWith {
+                assertThat(it).isEqualTo(true)
+            }
+            .verifyComplete()
+
+    }
+
+    @Test
+    fun validateProteinFailed_standardValidation() {
+        //given
+        val food1 = Food(1, "Food1", "Type", "Segment", 32f, LocalDateTime.now())
+        val food2 = Food(2, "Food2", "Type", "Segment", 31f, LocalDateTime.now())
+        val food3 = Food(3, "Food3", "Type", "Segment", 30f, LocalDateTime.now())
+        val food4 = Food(4, "Food4", "Type", "Segment", 10f, LocalDateTime.now())
+        val listFoods = listOf(food1, food2, food3, food4)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+
+        //when
+        val mono = foodService.validateQuality(listFoods)
+        //then
+        StepVerifier
+            .create(mono)
+            .consumeNextWith {
+                assertThat(it).isEqualTo(false)
+            }
+            .verifyComplete()
+
+    }
+
+    @Test
+    fun validateProteinFailed_highValidation() {
+        //given
+        val food1 = Food(1, "Food1", "Type", "Segment", 32f, LocalDateTime.now())
+        val food2 = Food(2, "Food2", "Type", "Segment", 31f, LocalDateTime.now())
+        val food3 = Food(3, "Food3", "Type", "Segment", 30f, LocalDateTime.now())
+        val food4 = Food(4, "Food4", "Type", "Segment", 25f, LocalDateTime.now())
+        val listFoods = listOf(food1, food2, food3, food4)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+
+        //when
+        val mono = foodService.validateQuality(listFoods)
+        //then
+        StepVerifier
+            .create(mono)
+            .consumeNextWith {
+                assertThat(it).isEqualTo(false)
+            }
+            .verifyComplete()
+
+    }
+
+    @Test
+    fun validateProteinFailed_listEmpty() {
+        //given
+        val listFoods = emptyList<Food>()
+        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+
+        //when
+        val mono = foodService.validateQuality(listFoods)
+        //then
+        StepVerifier
+            .create(mono)
+            .consumeNextWith {
+                assertThat(it).isEqualTo(true)
+            }
+            .verifyComplete()
+
+    }
 }

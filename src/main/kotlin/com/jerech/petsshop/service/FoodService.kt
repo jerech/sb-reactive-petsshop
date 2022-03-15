@@ -9,4 +9,6 @@ interface FoodService {
 
     fun getAll(): Mono<List<Food>>
 
+    fun validateQuality(list: List<Food>): Mono<Boolean>
+
 }

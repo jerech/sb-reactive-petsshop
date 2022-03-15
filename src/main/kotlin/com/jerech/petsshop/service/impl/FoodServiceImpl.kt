@@ -4,6 +4,8 @@ import com.jerech.petsshop.controller.FoodController
 import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.repository.FoodRepository
 import com.jerech.petsshop.service.FoodService
+import com.jerech.petsshop.service.quality.validation.HighQuatity
+import com.jerech.petsshop.service.quality.validation.StandardQuatity
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.util.logging.Level
@@ -23,4 +25,13 @@ class FoodServiceImpl (private val foodRepository: FoodRepository): FoodService 
         return foodRepository.findAll()
             .collectList()
     }
+
+    override fun validateQuality(list: List<Food>): Mono<Boolean> {
+        val highQuatity = HighQuatity(null)
+        val standardQuatity = StandardQuatity(highQuatity)
+        return Mono.just(standardQuatity)
+            .map { it.validate(list) }
+    }
+
+
 }
