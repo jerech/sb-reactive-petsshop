@@ -31,9 +31,11 @@ enum class ErrorHandler(
     }
 
     fun build(detail: String?): Mono<ResponseEntity<ErrorResponse>> {
-        val errorResponse = ErrorResponse(httpStatus, title, detail!!)
-        return Mono.just(ResponseEntity.status(httpStatus)
-            .body(errorResponse))
+        return ErrorResponse(httpStatus, title, detail ?: "")
+            .let {
+                Mono.just(ResponseEntity.status(httpStatus)
+                    .body(it))
+            }
     }
 
     override fun toString(): String {
