@@ -5,6 +5,9 @@ import assertk.assertions.isEqualTo
 import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.repository.FoodRepository
 import com.jerech.petsshop.service.FoodService
+import com.jerech.petsshop.service.quality.validation.HighQuatity
+import com.jerech.petsshop.service.quality.validation.StandardQuatity
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -22,12 +25,20 @@ internal class FoodServiceImplTest {
     @Mock
     lateinit var foodRepository: FoodRepository
 
+    lateinit var initialQualityValidator: StandardQuatity
+
+    @BeforeEach
+    fun setUp() {
+        val highQuatity = HighQuatity(null)
+        initialQualityValidator = StandardQuatity(highQuatity)
+    }
+
     @Test
     fun save() {
         //given
         `when`(foodRepository.save(any()))
             .thenReturn(Mono.just(Food(1, "Dogee", "DOG", "ADULT", 20f, LocalDateTime.now())))
-        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository, initialQualityValidator)
 
         //when
         val monoFood = foodService.save(Food(null, "Dogee", "DOG", "ADULT", 20f, LocalDateTime.now()))
@@ -55,7 +66,7 @@ internal class FoodServiceImplTest {
         val food2 = Food(null, "Food2", "Type", "Segment", 10f, LocalDateTime.now())
         `when`(foodRepository.findAll())
             .thenReturn(Flux.just(food1, food2))
-        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository, initialQualityValidator)
 
         //when
         val monoFoods = foodService.getAll()
@@ -77,7 +88,7 @@ internal class FoodServiceImplTest {
         val food3 = Food(3, "Food3", "Type", "Segment", 30f, LocalDateTime.now())
         val food4 = Food(4, "Food4", "Type", "Segment", 28f, LocalDateTime.now())
         val listFoods = listOf(food1, food2, food3, food4)
-        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository, initialQualityValidator)
 
         //when
         val mono = foodService.validateQuality(listFoods)
@@ -99,7 +110,7 @@ internal class FoodServiceImplTest {
         val food3 = Food(3, "Food3", "Type", "Segment", 30f, LocalDateTime.now())
         val food4 = Food(4, "Food4", "Type", "Segment", 10f, LocalDateTime.now())
         val listFoods = listOf(food1, food2, food3, food4)
-        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository, initialQualityValidator)
 
         //when
         val mono = foodService.validateQuality(listFoods)
@@ -121,7 +132,7 @@ internal class FoodServiceImplTest {
         val food3 = Food(3, "Food3", "Type", "Segment", 30f, LocalDateTime.now())
         val food4 = Food(4, "Food4", "Type", "Segment", 25f, LocalDateTime.now())
         val listFoods = listOf(food1, food2, food3, food4)
-        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository, initialQualityValidator)
 
         //when
         val mono = foodService.validateQuality(listFoods)
@@ -139,7 +150,7 @@ internal class FoodServiceImplTest {
     fun validateProteinFailed_listEmpty() {
         //given
         val listFoods = emptyList<Food>()
-        val  foodService: FoodService = FoodServiceImpl(foodRepository)
+        val  foodService: FoodService = FoodServiceImpl(foodRepository, initialQualityValidator)
 
         //when
         val mono = foodService.validateQuality(listFoods)
