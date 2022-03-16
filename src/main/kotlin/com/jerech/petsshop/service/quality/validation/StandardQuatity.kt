@@ -5,17 +5,23 @@ import java.util.stream.Collectors
 
 class StandardQuatity(nextValidator: FoodQualityValidator?): FoodQualityValidator(nextValidator) {
     override fun validate(foodList: List<Food>): Boolean {
-        val standardProtein = 15f
-        val listStandardQuatity = foodList
-            .stream()
-            .filter{ it.proteinPercentage > standardProtein}
-            .collect(Collectors.toList())
 
-        if (listStandardQuatity.size == foodList.size){
-            return nextValidator?.validate(foodList) ?: true
-        } else {
-            println("Failed StandardQuatity validation")
-            return false
+        val sizeToCompare = foodList
+            .stream()
+            .filter{ it.proteinPercentage > STANDARD_QUALITY_PROTEIN}
+            .collect(Collectors.toList())
+            .size
+
+        when(foodList.size) {
+            sizeToCompare -> return nextValidator?.validate(foodList) ?: true
+            else -> {
+                println("Failed StandardQuatity validation")
+                return false
+            }
         }
+    }
+
+    companion object {
+        private const val STANDARD_QUALITY_PROTEIN = 15f
     }
 }

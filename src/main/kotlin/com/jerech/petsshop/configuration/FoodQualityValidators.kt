@@ -8,8 +8,12 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class FoodQualityValidators {
 
+    /**
+     * Create config for initilize food quality validators.
+     * POO Pattern use for this funtionallity is Chain of Representation
+     */
     @Bean
-    fun initialQualityValidator(): StandardQuatity {
+    fun buildQualityValidator(): StandardQuatity {
         val highQuatity = HighQuatity(null)
         return StandardQuatity(highQuatity)
     }
