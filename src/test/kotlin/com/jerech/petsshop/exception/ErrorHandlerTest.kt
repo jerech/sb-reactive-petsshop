@@ -1,8 +1,7 @@
-package com.jerech.petsshop.exception;
+package com.jerech.petsshop.exception
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
@@ -25,36 +24,31 @@ internal class ErrorHandlerTest {
     fun getErrorHandlerFromExceptionNameForInvalidParamsException() {
         val error = WebExchangeBindException(methodParameter, bindingResult)
         val errorHandler = ErrorHandler.from(error)
-        Assertions
-            .assertThat(errorHandler.httpStatus)
-            .isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorHandler.httpStatus)
+            .isEqualTo(HttpStatus.BAD_REQUEST)
 
-        Assertions
-            .assertThat(errorHandler.title)
-            .isEqualTo("Invalid Params");
-
+        assertThat(errorHandler.title)
+            .isEqualTo("Invalid Params")
     }
 
     @Test
     fun getErrorHandlerFromExceptionNameForNotFoundException() {
         val error = Throwable(RuntimeException())
         val errorHandler = ErrorHandler.from(error)
-        Assertions
-            .assertThat(errorHandler.httpStatus)
+        assertThat(errorHandler.httpStatus)
             .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
-        Assertions
-            .assertThat(errorHandler.title)
+        assertThat(errorHandler.title)
             .isEqualTo("GENERIC ERROR")
     }
 
     @Test
     fun getServerResponseForInvalidParamsException() {
-        val errorHandler = ErrorHandler.INVALID_PARAMS;
+        val errorHandler = ErrorHandler.INVALID_PARAMS
         val responseMono = errorHandler.build("Detalle error")
 
         StepVerifier
             .create(responseMono)
-            .expectNextMatches {r -> HttpStatus.BAD_REQUEST == r.statusCode }
+            .expectNextMatches { r -> HttpStatus.BAD_REQUEST == r.statusCode }
             .expectComplete()
             .verify()
     }
@@ -67,7 +61,9 @@ internal class ErrorHandlerTest {
 
         StepVerifier
             .create(responseMono)
-            .expectNextMatches {r -> HttpStatus.INTERNAL_SERVER_ERROR == r.statusCode }
+            .expectNextMatches { r ->
+                HttpStatus.INTERNAL_SERVER_ERROR == r.statusCode
+            }
             .expectComplete()
             .verify()
     }

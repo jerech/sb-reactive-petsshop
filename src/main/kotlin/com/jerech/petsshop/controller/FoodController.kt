@@ -6,13 +6,16 @@ import com.jerech.petsshop.exception.ErrorHandler
 import com.jerech.petsshop.service.FoodService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.stream.Collectors
 import javax.validation.Valid
-
 
 @RestController
 @RequestMapping("/v1/food")
@@ -35,10 +38,13 @@ class FoodController(private val foodService: FoodService) {
     @GetMapping
     fun getAll(): Mono<ResponseEntity<*>> {
         return foodService.getAll()
-            .map { listFood -> listFood
-                .stream()
-                .map { food -> FoodResponse(food.name, food.type, food.segment, food.proteinPercentage) }
-                .collect(Collectors.toList())
+            .map { listFood ->
+                listFood
+                    .stream()
+                    .map { food ->
+                        FoodResponse(food.name, food.type, food.segment, food.proteinPercentage)
+                    }
+                    .collect(Collectors.toList())
             }
             .doOnNext { listFoodResponse -> logger.log(Level.INFO, "Cantidad de foods responses: " + listFoodResponse.size) }
             .map<ResponseEntity<*>> { ResponseEntity.ok(it) }

@@ -1,13 +1,18 @@
 package com.jerech.petsshop.integrationstest
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.jerech.petsshop.controller.dto.FoodRequest
 import com.jerech.petsshop.controller.dto.FoodResponse
 import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.repository.FoodRepository
 import com.jerech.petsshop.service.FoodService
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,26 +47,26 @@ internal class FoodControllerIT {
     fun tearDown() {
         val countDownLatch = CountDownLatch(1)
         foodRepository.deleteAll()
-            .doOnSuccess{
+            .doOnSuccess {
                 countDownLatch.countDown()
             }
             .subscribe()
         countDownLatch.await(1L, TimeUnit.SECONDS)
-        Assertions.assertThat(countDownLatch.count).isEqualTo(0)
+        assertThat(countDownLatch.count, name = "Count success").isEqualTo(0)
     }
 
     @Test
     @Order(1)
-    fun `create food successfully` () {
-        //given
+    fun `create food successfully`() {
+        // given
         val requestBody = FoodRequest("Dogee", "DOG", "ADULT", 20f)
-        //when
+        // when
         webTestClient
             .post()
             .uri("/v1/food")
             .body(Mono.just(requestBody))
             .exchange()
-            //then
+            // then
             .expectStatus().isCreated
 
         verify(foodService).save(any())
@@ -71,43 +76,40 @@ internal class FoodControllerIT {
         StepVerifier
             .create(monoFood)
             .consumeNextWith {
-                Assertions.assertThat(it.name).isEqualTo("Dogee")
-                Assertions.assertThat(it.type).isEqualTo("DOG")
-                Assertions.assertThat(it.segment).isEqualTo("ADULT")
+                assertThat(it.name).isEqualTo("Dogee")
+                assertThat(it.type).isEqualTo("DOG")
+                assertThat(it.segment).isEqualTo("ADULT")
             }
             .verifyComplete()
-
     }
 
     @Test
     @Order(2)
     fun `get all foods`() {
-        //given
+        // given
         val food1 = Food(null, "Food1", "Type", "Segment", 10f, LocalDateTime.now())
         val food2 = Food(null, "Food2", "Type", "Segment", 16f, LocalDateTime.now())
-        val foodResponse1 = FoodResponse( "Food1", "Type", "Segment", 10f)
-        val foodResponse2 = FoodResponse( "Food2", "Type", "Segment", 16f)
+        val foodResponse1 = FoodResponse("Food1", "Type", "Segment", 10f)
+        val foodResponse2 = FoodResponse("Food2", "Type", "Segment", 16f)
 
         foodRepository.save(food1).block()
         foodRepository.save(food2).block()
 
-        //when
+        // when
         webTestClient
             .get()
             .uri("/v1/food")
             .exchange()
-            //then
+            // then
             .expectStatus().isOk
             .expectBodyList(FoodResponse::class.java)
             .consumeWith<WebTestClient.ListBodySpec<FoodResponse>> {
                 response ->
-                Assertions.assertThat(response.responseBody!![0])
+                assertThat(response.responseBody!![0])
                     .isEqualTo(foodResponse1)
-                Assertions.assertThat(response.responseBody!![1])
+                assertThat(response.responseBody!![1])
                     .isEqualTo(foodResponse2)
             }
             .hasSize(2)
-
     }
-
 }

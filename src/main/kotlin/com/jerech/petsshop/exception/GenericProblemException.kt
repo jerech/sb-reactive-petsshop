@@ -1,3 +1,3 @@
-package com.jerech.petsshop.exception;
+package com.jerech.petsshop.exception
 
-class GenericProblemException(s: String): RuntimeException(s)
+class GenericProblemException(s: String) : RuntimeException(s)

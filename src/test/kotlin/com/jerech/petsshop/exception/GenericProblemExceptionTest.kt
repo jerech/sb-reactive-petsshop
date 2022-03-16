@@ -1,6 +1,8 @@
 package com.jerech.petsshop.exception
 
-import org.assertj.core.api.Assertions
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import org.junit.jupiter.api.Test
 
 internal class GenericProblemExceptionTest {
@@ -9,13 +11,10 @@ internal class GenericProblemExceptionTest {
     fun createGenericProblemException() {
         val genericProblemException = GenericProblemException("message")
 
-        Assertions
-            .assertThat(genericProblemException)
+        assertThat(genericProblemException)
             .isInstanceOf(RuntimeException::class.java)
 
-        Assertions
-            .assertThat(genericProblemException.message)
+        assertThat(genericProblemException.message)
             .isEqualTo("message")
-
     }
 }

@@ -23,5 +23,4 @@ interface FoodService {
      * @author JereCh
      */
     fun validateQuality(list: List<Food>): Mono<Boolean>
-
 }

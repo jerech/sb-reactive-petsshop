@@ -9,16 +9,16 @@ internal class HighQuatityTest {
 
     @Test
     fun validate() {
-        //given
+        // given
         val highQuatity = HighQuatity(null)
         val food1 = Food(1, "Food1", "Type", "Segment", 30f, LocalDateTime.now())
         val food2 = Food(2, "Food2", "Type", "Segment", 32f, LocalDateTime.now())
         val list = listOf(food1, food2)
 
-        //when
+        // when
         Assertions
             .assertThat(highQuatity.validate(list))
-            //then
+            // then
             .isTrue()
     }
 }

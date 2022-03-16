@@ -11,7 +11,7 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 @Service
-class FoodServiceImpl (private val foodRepository: FoodRepository, private val initStepValidator: StandardQuatity): FoodService {
+class FoodServiceImpl(private val foodRepository: FoodRepository, private val initStepValidator: StandardQuatity) : FoodService {
 
     val logger: Logger = Logger.getLogger(FoodController::class.java.simpleName)
 
@@ -29,6 +29,4 @@ class FoodServiceImpl (private val foodRepository: FoodRepository, private val i
         return Mono.just(initStepValidator)
             .map { it.validate(list) }
     }
-
-
 }

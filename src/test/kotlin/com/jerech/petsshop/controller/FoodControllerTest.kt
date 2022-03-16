@@ -14,7 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Collections
 
 @ExtendWith(MockitoExtension::class)
 internal class FoodControllerTest {
@@ -31,48 +31,47 @@ internal class FoodControllerTest {
 
     @Test
     fun createFoodSuccessfully() {
-        //given
+        // given
         `when`(foodService.save(any()))
             .thenReturn(Mono.just(Food(1, "Dogee", "DOG", "ADULT", 20f, LocalDateTime.now())))
         val requestBody = FoodRequest("Dogee", "DOG", "ADULT", 20f)
-        //when
+        // when
         webTestClient
             .post()
             .uri("/v1/food")
             .body(Mono.just(requestBody))
             .exchange()
-            //then
+            // then
             .expectStatus().isCreated
     }
 
     @Test
     fun createFood4xx() {
-        //given
+        // given
         val requestBody = FoodRequest("", "", "", 20f)
 
-        //when
+        // when
         webTestClient
             .post()
             .uri("/v1/food")
             .body(Mono.just(requestBody))
             .exchange()
-            //then
+            // then
             .expectStatus().is4xxClientError
     }
 
     @Test
     fun getAllSucessful() {
-        //given
+        // given
         `when`(foodService.getAll())
             .thenReturn(Mono.just(Collections.emptyList()))
 
-        //when
+        // when
         webTestClient
             .get()
             .uri("/v1/food")
             .exchange()
-            //then
+            // then
             .expectStatus().isOk
     }
-
 }

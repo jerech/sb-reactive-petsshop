@@ -25,7 +25,7 @@ enum class ErrorHandler(
 
     companion object {
         @JvmStatic
-        fun from(error: Throwable) : ErrorHandler {
+        fun from(error: Throwable): ErrorHandler {
             return ERROR_HANDLER_BY_EXCEPTION_NAME.getOrDefault(error::class.java.name, GENERIC_ERROR)
         }
     }
@@ -33,13 +33,13 @@ enum class ErrorHandler(
     fun build(detail: String?): Mono<ResponseEntity<ErrorResponse>> {
         return ErrorResponse(httpStatus, title, detail ?: "")
             .let {
-                Mono.just(ResponseEntity.status(httpStatus)
-                    .body(it))
+                Mono.just(
+                    ResponseEntity.status(httpStatus).body(it)
+                )
             }
     }
 
     override fun toString(): String {
         return name
     }
-
 }
