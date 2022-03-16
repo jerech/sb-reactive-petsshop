@@ -11,6 +11,7 @@ class FoodQualityValidators {
     /**
      * Create config for initilize food quality validators.
      * POO Pattern use for this funtionallity is Chain of Representation
+     * @author JereCh
      */
     @Bean
     fun buildQualityValidator(): StandardQuatity {
