@@ -6,7 +6,7 @@ import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.repository.FoodRepository
 import com.jerech.petsshop.service.FoodService
 import com.jerech.petsshop.service.quality.validation.HighQuality
-import com.jerech.petsshop.service.quality.validation.StandardQuatity
+import com.jerech.petsshop.service.quality.validation.StandardQuality
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -21,12 +21,12 @@ internal class FoodServiceImplTest {
 
     val foodRepository: FoodRepository = mock(FoodRepository::class.java)
 
-    lateinit var initialQualityValidator: StandardQuatity
+    lateinit var initialQualityValidator: StandardQuality
 
     @BeforeEach
     fun setUp() {
         val highQuatity = HighQuality(null)
-        initialQualityValidator = StandardQuatity(highQuatity)
+        initialQualityValidator = StandardQuality(highQuatity)
     }
 
     @Test

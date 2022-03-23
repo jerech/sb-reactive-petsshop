@@ -1,7 +1,7 @@
 package com.jerech.petsshop.configuration
 
 import com.jerech.petsshop.service.quality.validation.HighQuality
-import com.jerech.petsshop.service.quality.validation.StandardQuatity
+import com.jerech.petsshop.service.quality.validation.StandardQuality
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,8 +14,8 @@ class FoodQualityValidators {
      * @author JereCh
      */
     @Bean
-    fun buildQualityValidator(): StandardQuatity {
+    fun buildQualityValidator(): StandardQuality {
         val highQuatity = HighQuality(null)
-        return StandardQuatity(highQuatity)
+        return StandardQuality(highQuatity)
     }
 }

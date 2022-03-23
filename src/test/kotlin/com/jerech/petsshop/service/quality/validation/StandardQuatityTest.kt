@@ -10,7 +10,7 @@ internal class StandardQuatityTest {
     @Test
     fun validate() {
         // given
-        val standardQuatity = StandardQuatity(null)
+        val standardQuatity = StandardQuality(null)
         val food1 = Food(1, "Food1", "Type", "Segment", 20f, LocalDateTime.now())
         val food2 = Food(2, "Food2", "Type", "Segment", 18f, LocalDateTime.now())
         val list = listOf(food1, food2)
