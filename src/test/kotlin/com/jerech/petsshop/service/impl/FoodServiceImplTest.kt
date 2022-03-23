@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.repository.FoodRepository
 import com.jerech.petsshop.service.FoodService
-import com.jerech.petsshop.service.quality.validation.HighQuatity
+import com.jerech.petsshop.service.quality.validation.HighQuality
 import com.jerech.petsshop.service.quality.validation.StandardQuatity
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,7 +25,7 @@ internal class FoodServiceImplTest {
 
     @BeforeEach
     fun setUp() {
-        val highQuatity = HighQuatity(null)
+        val highQuatity = HighQuality(null)
         initialQualityValidator = StandardQuatity(highQuatity)
     }
 
