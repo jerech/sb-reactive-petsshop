@@ -12,12 +12,15 @@
         </layout>
     </appender>
 
-    <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="Console" />
     </root>
 
     <logger name="com.amtasoftware.petsshop" level="trace" additivity="false">
+        <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="io.getunleash" level="trace" additivity="false">
         <appender-ref ref="Console" />
     </logger>
 

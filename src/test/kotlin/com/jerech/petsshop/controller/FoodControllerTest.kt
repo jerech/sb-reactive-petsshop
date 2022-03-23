@@ -1,15 +1,19 @@
 package com.jerech.petsshop.controller
 
+import com.jerech.petsshop.configuration.RequestContext
 import com.jerech.petsshop.controller.dto.FoodRequest
 import com.jerech.petsshop.model.Food
 import com.jerech.petsshop.service.FoodService
+import io.getunleash.FakeUnleash
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.verifyNoInteractions
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
 import reactor.core.publisher.Mono
@@ -24,9 +28,12 @@ internal class FoodControllerTest {
     @Mock
     lateinit var foodService: FoodService
 
+    val requestContext = RequestContext("1", "B1")
+    val fakeUnleash = FakeUnleash()
+
     @BeforeEach
     fun setUp() {
-        webTestClient = WebTestClient.bindToController(FoodController(foodService)).build()
+        webTestClient = WebTestClient.bindToController(FoodController(foodService, fakeUnleash, requestContext)).build()
     }
 
     @Test
@@ -73,5 +80,45 @@ internal class FoodControllerTest {
             .exchange()
             // then
             .expectStatus().isOk
+    }
+
+    @Test
+    fun validateAllFoodQualityForFeatureEnabled() {
+        // given
+        fakeUnleash.enableAll()
+        `when`(foodService.getAll())
+            .thenReturn(Mono.just(Collections.emptyList()))
+        `when`(foodService.validateQuality(Collections.emptyList()))
+            .thenReturn(Mono.just(true))
+
+        // when
+        webTestClient
+            .get()
+            .uri("/v1/food/quality/validate")
+            .header("User-Id", "1")
+            .header("Customer-Segment", "B1")
+            .exchange()
+            // then
+            .expectStatus().isOk
+
+        verify(foodService).validateQuality(Collections.emptyList())
+    }
+
+    @Test
+    fun validateAllFoodQualityForFeatureDisabled() {
+        // given
+        fakeUnleash.disableAll()
+
+        // when
+        webTestClient
+            .get()
+            .uri("/v1/food/quality/validate")
+            .header("User-Id", "1")
+            .header("Customer-Segment", "B1")
+            .exchange()
+            // then
+            .expectStatus().isOk
+
+        verifyNoInteractions(foodService)
     }
 }

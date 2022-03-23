@@ -1,16 +1,15 @@
 package com.jerech.petsshop.controller
 
+import com.jerech.petsshop.configuration.RequestContext
 import com.jerech.petsshop.controller.dto.FoodRequest
 import com.jerech.petsshop.controller.dto.FoodResponse
 import com.jerech.petsshop.exception.ErrorHandler
 import com.jerech.petsshop.service.FoodService
+import io.getunleash.Unleash
+import io.getunleash.UnleashContext
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -19,7 +18,11 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/v1/food")
-class FoodController(private val foodService: FoodService) {
+class FoodController(
+    private val foodService: FoodService,
+    private val unleash: Unleash,
+    private val requestContext: RequestContext
+) {
 
     val logger: Logger = Logger.getLogger(FoodController::class.java.simpleName)
 
@@ -51,5 +54,28 @@ class FoodController(private val foodService: FoodService) {
             .onErrorResume { error ->
                 ErrorHandler.from(error).build(error.message)
             }
+    }
+
+    @GetMapping("quality/validate")
+    fun validateAllFoodQuality(
+        @RequestHeader("User-Id") userId: String,
+        @RequestHeader("Customer-Segment") customerSegment: String
+    ): Mono<ResponseEntity<*>> {
+        requestContext.apply {
+            this.userId = userId
+            this.customerSegment = customerSegment
+        }
+        val context: UnleashContext = UnleashContext.builder()
+            .userId(requestContext?.let { it.userId } ?: "").build()
+
+        return if (unleash.isEnabled("food-quality-validation", context)) {
+            foodService.getAll()
+                .flatMap { foodService.validateQuality(it) }
+                .map {
+                    ResponseEntity.ok((if (it) "High quality for all food" else "The quality is small for all food"))
+                }
+        } else {
+            Mono.just(ResponseEntity.ok("Validation not permited"))
+        }
     }
 }
